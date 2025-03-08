@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Ajv from 'ajv';
 
-// Create an AJV instance
+// Create an AJV instance.
 const ajv = new Ajv();
 
-// Define the JSON Schema matching your new payload structure
+// Define the JSON Schema matching your new payload structure.
 const payloadSchema = {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "BillerPayload",
@@ -190,10 +190,10 @@ const payloadSchema = {
   "additionalProperties": false
 };
 
-// Compile the schema into a validation function.
+// Compile the schema.
 const validator = ajv.compile(payloadSchema);
 
-// New default payload matching your new format.
+// Default payload matching your new format.
 const defaultPayload = {
   "clientid": "12323c",
   "billerid": "asd",
@@ -265,7 +265,7 @@ const defaultPayload = {
 };
 
 /**
- * Helper function to set a deeply nested value in an object using dot-notation.
+ * Helper function to set a deeply nested value using dot-notation.
  */
 function setDeepValue(obj, path, value) {
   const parts = path.split('.');
@@ -280,7 +280,7 @@ function setDeepValue(obj, path, value) {
 
 /**
  * DynamicForm: Recursively renders a form based on `data`.
- * Each input gets an `id` based on its path and a harmless onSelect handler.
+ * Each input gets an id derived from its path and an onSelect handler.
  */
 function DynamicForm({ data, onChange, path = '' }) {
   if (data === undefined || data === null) {
@@ -290,7 +290,7 @@ function DynamicForm({ data, onChange, path = '' }) {
         type="text"
         value=""
         onChange={(e) => onChange(path, e.target.value)}
-        onSelect={(e) => {}}
+        onSelect={() => {}}
       />
     );
   }
@@ -332,19 +332,19 @@ function DynamicForm({ data, onChange, path = '' }) {
         type={typeof data === 'number' ? 'number' : 'text'}
         value={data || ""}
         onChange={(e) => onChange(path, e.target.value)}
-        onSelect={(e) => {}}
+        onSelect={() => {}}
       />
     );
   }
 }
 
 /**
- * Main component: Renders a dynamic payload editor popup.
- * It keeps a raw JSON textarea in sync with a dynamic form,
- * validates the payload using AJV, and submits via axios.
+ * Main component: Renders the dynamic payload editor inline.
+ * It displays a raw JSON textarea, a dynamic form, and buttons to
+ * toggle the editor and submit the payload after AJV validation.
  */
 const ApiPayloadPopupComplex = () => {
-  const [showPopup, setShowPopup] = useState(false);
+  const [showEditor, setShowEditor] = useState(false);
   const [formPayload, setFormPayload] = useState(defaultPayload);
   const [rawPayload, setRawPayload] = useState(JSON.stringify(defaultPayload, null, 2));
   const [error, setError] = useState(null);
@@ -380,7 +380,7 @@ const ApiPayloadPopupComplex = () => {
       }
       const response = await axios.post('API_LINK', payloadToSend);
       console.log('API response:', response.data);
-      setShowPopup(false);
+      setError(null);
     } catch (err) {
       console.error('Error calling API:', err);
       setError('API call failed');
@@ -389,23 +389,12 @@ const ApiPayloadPopupComplex = () => {
 
   return (
     <div>
-      <button onClick={() => setShowPopup(true)}>Open Payload Popup</button>
-      {showPopup && (
-        <div
-          style={{
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            backgroundColor: 'white',
-            padding: '20px',
-            border: '1px solid black',
-            zIndex: 1000,
-            maxHeight: '80vh',
-            overflowY: 'auto',
-            width: '80vw'
-          }}
-        >
+      <button onClick={() => setShowEditor(!showEditor)}>
+        {showEditor ? 'Hide Payload Editor' : 'Show Payload Editor'}
+      </button>
+
+      {showEditor && (
+        <div style={{ marginTop: '20px' }}>
           <h2>Dynamic Payload Editor</h2>
           {error && <div style={{ color: 'red' }}>{error}</div>}
           {/* Raw JSON Editor */}
@@ -418,7 +407,7 @@ const ApiPayloadPopupComplex = () => {
               rows={12}
               cols={60}
               style={{ fontFamily: 'monospace', width: '100%' }}
-              onSelect={(e) => {}}
+              onSelect={() => {}}
             />
           </div>
           {/* Dynamic Form */}
@@ -426,7 +415,6 @@ const ApiPayloadPopupComplex = () => {
           <DynamicForm data={formPayload} onChange={handleDynamicChange} />
           <div style={{ marginTop: '20px' }}>
             <button onClick={handleSubmit}>Submit Payload</button>
-            <button onClick={() => setShowPopup(false)}>Close</button>
           </div>
         </div>
       )}
