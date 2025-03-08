@@ -2,18 +2,198 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Ajv from 'ajv';
 
-import payloadSchema from '../SCHEMA/billerConfigurtationJson'
-
-// 1) Create an AJV instance
+// Create an AJV instance
 const ajv = new Ajv();
 
-// 2) Define the JSON Schema matching your new payload structure
-const billerPayloadSchema = payloadSchema;
+// Define the JSON Schema matching your new payload structure
+const payloadSchema = {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BillerPayload",
+  "type": "object",
+  "properties": {
+    "clientid": { "type": "string" },
+    "billerid": { "type": "string" },
+    "billerConfiguration": {
+      "type": "object",
+      "properties": {
+        "billerSpecificConfiguration": {
+          "type": "object",
+          "properties": {
+            "spsBillerSeesiticConfiguratiop": {
+              "type": "object",
+              "properties": {
+                "billerPaymentEngineConfiguration": {
+                  "type": "object",
+                  "properties": {
+                    "payeeSiteld": {
+                      "type": "object",
+                      "properties": {
+                        "dataType": { "type": "string" },
+                        "expression": { "type": "string" },
+                        "expressionType": { "type": "string" }
+                      },
+                      "required": ["dataType", "expression", "expressionType"],
+                      "additionalProperties": false
+                    },
+                    "description": {
+                      "type": "object",
+                      "properties": {
+                        "dataType": { "type": "string" },
+                        "expression": { "type": "string" },
+                        "expressionType": { "type": "string" }
+                      },
+                      "required": ["dataType", "expression", "expressionType"],
+                      "additionalProperties": false
+                    },
+                    "lineDescription": {
+                      "type": "object",
+                      "properties": {
+                        "dataType": { "type": "string" },
+                        "expression": { "type": "string" },
+                        "expressionType": { "type": "string" }
+                      },
+                      "required": ["dataType", "expression", "expressionType"],
+                      "additionalProperties": false
+                    },
+                    "marketplaceld": {
+                      "type": "object",
+                      "properties": {
+                        "dataType": { "type": "string" },
+                        "expression": { "type": "string" },
+                        "expressionType": { "type": "string" }
+                      },
+                      "required": ["dataType", "expression", "expressionType"],
+                      "additionalProperties": false
+                    },
+                    "payGroup": {
+                      "type": "object",
+                      "properties": {
+                        "dataType": { "type": "string" },
+                        "expression": { "type": "string" },
+                        "expressionType": { "type": "string" }
+                      },
+                      "required": ["dataType", "expression", "expressionType"],
+                      "additionalProperties": false
+                    },
+                    "termsid": {
+                      "type": "object",
+                      "properties": {
+                        "dataType": { "type": "string" },
+                        "expression": { "type": "string" },
+                        "expressionType": { "type": "string" }
+                      },
+                      "required": ["dataType", "expression", "expressionType"],
+                      "additionalProperties": false
+                    },
+                    "commonConfiguration": {
+                      "type": "object",
+                      "properties": {
+                        "icsCommonConfiguration": {
+                          "type": "object",
+                          "properties": {
+                            "invoiceConfiguration": {
+                              "type": "object",
+                              "properties": {
+                                "configMap": {
+                                  "type": "object",
+                                  "properties": {
+                                    "GM&GM_PER_LOAD-1": {
+                                      "type": "object",
+                                      "properties": {
+                                        "configAttributes": {
+                                          "type": "object",
+                                          "properties": {
+                                            "invoiceBatchSchedule": {
+                                              "type": "object",
+                                              "properties": {
+                                                "timeZone": { "type": "string" },
+                                                "type": { "type": "string" },
+                                                "value": { "type": "string" }
+                                              },
+                                              "required": ["timeZone", "type", "value"],
+                                              "additionalProperties": false
+                                            },
+                                            "invoiceNumberExpression": {
+                                              "type": "object",
+                                              "properties": {
+                                                "expression": { "type": "string" },
+                                                "expressionType": { "type": "string" },
+                                                "name": { "type": "string" }
+                                              },
+                                              "required": ["expression", "expressionType", "name"],
+                                              "additionalProperties": false
+                                            },
+                                            "configidentifier": {
+                                              "type": "object",
+                                              "properties": {
+                                                "billerid": { "type": "string" },
+                                                "configid": { "type": "string" },
+                                                "customerid": { "type": "string" }
+                                              },
+                                              "required": ["billerid", "configid", "customerid"],
+                                              "additionalProperties": false
+                                            }
+                                          },
+                                          "required": [
+                                            "invoiceBatchSchedule",
+                                            "invoiceNumberExpression",
+                                            "configidentifier"
+                                          ],
+                                          "additionalProperties": false
+                                        }
+                                      },
+                                      "required": ["configAttributes"],
+                                      "additionalProperties": false
+                                    }
+                                  },
+                                  "required": ["GM&GM_PER_LOAD-1"],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "required": ["configMap"],
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": ["invoiceConfiguration"],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": ["icsCommonConfiguration"],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "payeeSiteld",
+                    "description",
+                    "lineDescription",
+                    "marketplaceld",
+                    "payGroup",
+                    "termsid",
+                    "commonConfiguration"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["billerPaymentEngineConfiguration"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["spsBillerSeesiticConfiguratiop"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["billerSpecificConfiguration"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["clientid", "billerid", "billerConfiguration"],
+  "additionalProperties": false
+};
 
-// 3) Compile the schema into a validation function
-const validator = ajv.compile(billerPayloadSchema);
+// Compile the schema into a validation function.
+const validator = ajv.compile(payloadSchema);
 
-// 4) Your new default payload
+// New default payload matching your new format.
 const defaultPayload = {
   "clientid": "12323c",
   "billerid": "asd",
@@ -85,7 +265,7 @@ const defaultPayload = {
 };
 
 /**
- * Helper to set a deeply nested value (e.g. "billerConfiguration.billerSpecificConfiguration...")
+ * Helper function to set a deeply nested value in an object using dot-notation.
  */
 function setDeepValue(obj, path, value) {
   const parts = path.split('.');
@@ -99,13 +279,23 @@ function setDeepValue(obj, path, value) {
 }
 
 /**
- * Renders a form dynamically based on the structure of `data`.
- * - Objects: recursively render child properties.
- * - Primitives: render an <input> field.
+ * DynamicForm: Recursively renders a form based on `data`.
+ * Each input gets an `id` based on its path and a harmless onSelect handler.
  */
 function DynamicForm({ data, onChange, path = '' }) {
+  if (data === undefined || data === null) {
+    return (
+      <input
+        id={path}
+        type="text"
+        value=""
+        onChange={(e) => onChange(path, e.target.value)}
+        onSelect={(e) => {}}
+      />
+    );
+  }
+  
   if (Array.isArray(data)) {
-    // If data is an array, render each item recursively
     return (
       <div style={{ marginLeft: '20px' }}>
         {data.map((item, index) => (
@@ -120,15 +310,14 @@ function DynamicForm({ data, onChange, path = '' }) {
         ))}
       </div>
     );
-  } else if (data && typeof data === 'object') {
-    // If data is an object, iterate over its keys
+  } else if (typeof data === 'object') {
     return (
       <div style={{ marginLeft: '20px', borderLeft: '1px solid #ccc', paddingLeft: '10px' }}>
         {Object.entries(data).map(([key, value]) => {
           const newPath = path ? `${path}.${key}` : key;
           return (
             <div key={key} style={{ marginBottom: '5px' }}>
-              <label>{key}:</label>
+              <label htmlFor={newPath}>{key}:</label>
               <DynamicForm data={value} onChange={onChange} path={newPath} />
             </div>
           );
@@ -136,24 +325,23 @@ function DynamicForm({ data, onChange, path = '' }) {
       </div>
     );
   } else {
-    // Primitive value (string, number, etc.)
     return (
       <input
+        id={path}
         style={{ marginLeft: '10px' }}
         type={typeof data === 'number' ? 'number' : 'text'}
-        value={data}
+        value={data || ""}
         onChange={(e) => onChange(path, e.target.value)}
+        onSelect={(e) => {}}
       />
     );
   }
 }
 
 /**
- * Main component that:
- * 1. Shows a button to open a popup.
- * 2. Displays a raw JSON text area.
- * 3. Dynamically renders a form from the JSON structure.
- * 4. Validates the payload before sending to the API.
+ * Main component: Renders a dynamic payload editor popup.
+ * It keeps a raw JSON textarea in sync with a dynamic form,
+ * validates the payload using AJV, and submits via axios.
  */
 const ApiPayloadPopupComplex = () => {
   const [showPopup, setShowPopup] = useState(false);
@@ -161,7 +349,7 @@ const ApiPayloadPopupComplex = () => {
   const [rawPayload, setRawPayload] = useState(JSON.stringify(defaultPayload, null, 2));
   const [error, setError] = useState(null);
 
-  // Keep the form and raw JSON in sync
+  // Update payload based on dynamic form changes.
   const handleDynamicChange = (path, value) => {
     const updated = JSON.parse(JSON.stringify(formPayload));
     setDeepValue(updated, path, value);
@@ -169,7 +357,7 @@ const ApiPayloadPopupComplex = () => {
     setRawPayload(JSON.stringify(updated, null, 2));
   };
 
-  // Parse raw JSON changes into formPayload
+  // Update payload when raw JSON is edited.
   const handleRawPayloadChange = (e) => {
     setRawPayload(e.target.value);
     try {
@@ -181,19 +369,15 @@ const ApiPayloadPopupComplex = () => {
     }
   };
 
-  // Validate and submit
+  // Validate payload using AJV and submit via axios.
   const handleSubmit = async () => {
     try {
       const payloadToSend = JSON.parse(rawPayload);
-      // Validate using AJV
       const valid = validator(payloadToSend);
       if (!valid) {
         setError('Validation error: ' + ajv.errorsText(validator.errors));
         return;
       }
-
-      // POST to your API endpoint
-      // Replace 'API_LINK' with your real endpoint
       const response = await axios.post('API_LINK', payloadToSend);
       console.log('API response:', response.data);
       setShowPopup(false);
@@ -206,7 +390,6 @@ const ApiPayloadPopupComplex = () => {
   return (
     <div>
       <button onClick={() => setShowPopup(true)}>Open Payload Popup</button>
-
       {showPopup && (
         <div
           style={{
@@ -224,27 +407,23 @@ const ApiPayloadPopupComplex = () => {
           }}
         >
           <h2>Dynamic Payload Editor</h2>
-
           {error && <div style={{ color: 'red' }}>{error}</div>}
-
-          {/* Raw JSON Textarea */}
+          {/* Raw JSON Editor */}
           <div style={{ marginBottom: '20px' }}>
             <label>Raw JSON Payload:</label>
             <br />
             <textarea
               value={rawPayload}
               onChange={handleRawPayloadChange}
-              onSelect={}
               rows={12}
               cols={60}
               style={{ fontFamily: 'monospace', width: '100%' }}
+              onSelect={(e) => {}}
             />
           </div>
-
           {/* Dynamic Form */}
           <h3>Form Fields (Generated from JSON)</h3>
           <DynamicForm data={formPayload} onChange={handleDynamicChange} />
-
           <div style={{ marginTop: '20px' }}>
             <button onClick={handleSubmit}>Submit Payload</button>
             <button onClick={() => setShowPopup(false)}>Close</button>
